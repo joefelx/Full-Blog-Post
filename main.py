@@ -6,7 +6,7 @@ from flask_login import LoginManager, login_user, logout_user, current_user, Use
 from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime
 from flask_ckeditor import CKEditor
-from forms import BlogForm, RegistrationForm, LoginForm
+from forms import BlogForm, RegistrationForm, LoginForm, CommentForm
 
 
 app = Flask(__name__)
@@ -39,7 +39,7 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(250), unique=True)
     password = db.Column(db.String(250))
     posts = relationship("BlogPost", back_populates="author")
-
+    comments = relationship("Comment", back_populates="comment_author")
 
 db.create_all()
 
@@ -55,6 +55,20 @@ class BlogPost(db.Model):
     body = db.Column(db.Text, nullable=False)
     img_url = db.Column(db.String(250))
     date = db.Column(db.String(250))
+    comments = relationship("Comment", back_populates="parent_post")
+
+
+db.create_all()
+
+
+class Comment(db.Model):
+    __tablename__ = "comments"
+    id = db.Column(db.Integer, primary_key=True)
+    post_id = db.Column(db.Integer, db.ForeignKey("blog_post.id"))
+    author_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    comment_author = relationship("User", back_populates="comments")
+    parent_post = relationship("BlogPost", back_populates="comments")
+    text = db.Column(db.String(250))
 
 
 db.create_all()
@@ -138,10 +152,25 @@ def add_new_posts():
     return render_template("add_post.html", form=form, is_edit=False)
 
 
-@app.route("/post/<post_id>", methods=["GET"])
+@app.route("/post/<post_id>", methods=["GET", "POST"])
 def show_post(post_id):
+    form = CommentForm()
     post = BlogPost.query.get(post_id)
-    return render_template("post.html", post=post, current_user=current_user)
+
+    if form.validate_on_submit():
+        if not current_user.is_authenticated:
+            return redirect(url_for("login"))
+        else:
+            comment = Comment(
+                text=form.comment.data,
+                comment_author=current_user,
+                parent_post=post
+            )
+
+            db.session.add(comment)
+            db.session.commit()
+
+    return render_template("post.html", post=post, current_user=current_user, form=form)
 
 
 @app.route("/edit/<int:post_id>", methods=["GET", "POST"])
@@ -168,7 +197,7 @@ def edit_post(post_id):
 
 @app.route("/delete", methods=["GET", "POST"])
 def delete():
-    id = request.args.get("post_id")
+    id = request.args.get("id")
     post = BlogPost.query.get(id)
     db.session.delete(post)
     db.session.commit()
@@ -188,6 +217,16 @@ def user_profile():
         user = User.query.get(user_id)
         return render_template("profile.html", user=user)
     return redirect(url_for("login"))
+
+
+@app.route("/delete_cmd", methods=["GET", "POST"])
+def delete_cmd():
+    cmd_id = request.args.get("cmd_id")
+    post_id = request.args.get("post_id")
+    comment = Comment.query.get(cmd_id)
+    db.session.delete(comment)
+    db.session.commit()
+    return redirect(url_for("show_post", post_id=post_id))
 
 
 if __name__ == "__main__":

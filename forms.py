@@ -28,3 +28,10 @@ class LoginForm(FlaskForm):
     email = StringField("Email", validators=[DataRequired()])
     password = PasswordField("Password", validators=[DataRequired()])
     submit = SubmitField("Login")
+
+
+# Comment Form
+class CommentForm(FlaskForm):
+    comment = StringField("Write comment")
+    submit = SubmitField("Comment")
+
