@@ -1,0 +1,25 @@
+{% include "header.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+<div>
+    <header class="masthead" style="background-image: url('static/img/edit-bg.jpg')">
+            <div class="container position-relative px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5 justify-content-center">
+                    <div class="col-md-10 col-lg-8 col-xl-7">
+                        <div class="site-heading">
+                            {% if not is_edit %}
+                            <h1>Create Blog</h1>
+                            {% else %}
+                            <h1>Edit Blog</h1>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+        <div class="col-md-10 col-lg-8 col-xl-7">
+            {{ wtf.quick_form(form, novalidate=True, button_map={"submit": "primary"}) }}
+        </div>
+    </div>
+</div>
+{% include "footer.html" %}

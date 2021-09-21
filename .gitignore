@@ -1,0 +1,70 @@
+Skip to content
+Search or jump to…
+Pull requests
+Issues
+Marketplace
+Explore
+
+@j0efelix
+pallets
+/
+flask
+Public
+2.2k
+56.7k14.6k
+Code
+Issues
+18
+Pull requests
+6
+Discussions
+Actions
+Security
+Insights
+flask/.gitignore
+@greyli
+greyli Add venv and .venv to .gitignore
+Latest commit 36872e7 on May 21
+ History
+ 4 contributors
+@mitsuhiko@davidism@greyli@redian
+26 lines (25 sloc)  220 Bytes
+
+.DS_Store
+.env
+.flaskenv
+*.pyc
+*.pyo
+env/
+venv/
+.venv/
+env*
+dist/
+build/
+*.egg
+*.egg-info/
+_mailinglist
+.tox/
+.cache/
+.pytest_cache/
+.idea/
+docs/_build/
+.vscode
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+*,cover
+© 2021 GitHub, Inc.
+Terms
+Privacy
+Security
+Status
+Docs
+Contact GitHub
+Pricing
+API
+Training
+Blog
+About
