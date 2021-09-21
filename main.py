@@ -10,7 +10,7 @@ from forms import BlogForm, RegistrationForm, LoginForm, CommentForm
 
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = "HELLO"
+app.config["SECRET_KEY"] = "Your Secret"
 ckeditor = CKEditor(app)
 Bootstrap(app)
 
